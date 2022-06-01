@@ -4,7 +4,7 @@ const postsRoutes = Router();
 const postsModels = require('../models/posts');
 
 //Get timeline of an user
-postsRoutes.get('/timeline', async() => {
+postsRoutes.get('/timeline', async(req, response) => {
     try {
         let recordPerPage = 5;
         let totalPages = await postsModels.count();
@@ -27,7 +27,7 @@ postsRoutes.get('/timeline', async() => {
 });
 
 //Create a new posts
-postsRoutes.post('/', async() => {
+postsRoutes.post('/', async(req, response) => {
     try {
         const newPost = await postsModels.create(req.body);
         response.json({
@@ -41,7 +41,7 @@ postsRoutes.post('/', async() => {
 });
 
 //Get info of the post
-postsRoutes.get('/', async() => {
+postsRoutes.get('/', async(req, response) => {
     try {
         const posts = await postsModels.findById(req.query.post_id);
         response.json(posts);
@@ -52,7 +52,7 @@ postsRoutes.get('/', async() => {
 });
 
 //Post send a like
-postsRoutes.post('/like', async() => {
+postsRoutes.post('/like', async(req, response) => {
     try {
         const posts = await postsModels.findById(req.body.post_id);
         await postsModels.findOneAndUpdate({ _id: req.body.post_id }, {
@@ -81,8 +81,9 @@ postsRoutes.post('/like', async() => {
 });
 
 //Save post
-postsRoutes.post('/save', async() => {
+postsRoutes.post('/save', async(req, response) => {
     try {
+        //No entiendo este endpoint ._.
         response.json({ data: "Ok", status: 200 });
     } catch (error) {
         console.log(error);
@@ -91,7 +92,7 @@ postsRoutes.post('/save', async() => {
 });
 
 //Comment on a post
-postsRoutes.post('/comment', async() => {
+postsRoutes.post('/comment', async(req, res) => {
     try {
         await postsModels.findOneAndUpdate({ _id: req.body.post_id }, {
             $set: {
@@ -107,14 +108,14 @@ postsRoutes.post('/comment', async() => {
             } else {
                 res.json({
                     result: true,
-                    info: info
+                    info: info,
+                    status: 200
                 })
             }
         });
-        response.json({ data: "Update", status: 200 });
     } catch (error) {
         console.log(error);
-        response.status(500).send("Server internal error");
+        res.status(500).send("Server internal error");
     }
 });
 
