@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
   },
   bio: {
     type: String,
-    default: "",
+    required: true,
   },
   created_at: {
     type: Date,

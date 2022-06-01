@@ -13,12 +13,23 @@ const createToken = (
 
 const validateToken = (token) => jwt.verify(token, process.env.TOKEN_SECRET);
 
+const validateUserPayload = (data) =>
+  ["username", "password", "email", "birthdate", "bio"].every((key) =>
+    data.hasOwnProperty(key)
+  );
+
 const route = router();
 
 //register
 route.post("/", async (req, res) => {
   try {
     //{ username, password, email, birthdate, bio }
+    const validInfo = validateUserPayload(req.body);
+    if (!validInfo) {
+      return res
+        .status(401)
+        .json({ message: "One or more fields are missing" });
+    }
     const user = await User.create(req.body);
     const token = createToken({
       name: user.name,
@@ -33,6 +44,7 @@ route.post("/", async (req, res) => {
   }
 });
 
+//login, both jwt and user/pw
 route.post("/login", async (req, res) => {
   try {
     const { username, password, token } = req.body;
