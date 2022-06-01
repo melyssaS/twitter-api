@@ -1,6 +1,7 @@
 const router = require("express").Router;
 const User = require("../models/user");
 const PostLike = require("../models/post-likes");
+const PostSaved = require("../models/post-saved");
 const Follower = require("../models/follower");
 const Post = require("../models/post");
 const { validateToken } = require("../config/auth");
@@ -39,7 +40,7 @@ route.get("/", async (req, res) => {
 
 //Endpoint de publicaciones que un usuario ha dado "me gusta"
 //Solo está permitido si el usuario permite ver sus "me gusta", a menos que sea el usuario mismo
-route.post("/liked-by", async (req, res) => {
+route.get("/liked-by", async (req, res) => {
   try {
     const { user_id } = req.query;
     if (!user_id) {
@@ -62,6 +63,21 @@ route.post("/liked-by", async (req, res) => {
     //get the posts the user_id has liked
     const postLikes = await PostLike.find({ author_id: user_id }).lean();
     const postsId = postLikes.map((p) => p.post_id);
+    const posts = await Post.find({ _id: { $in: postsId } });
+    res.status(200).json({ posts });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
+
+route.get("/saved-by", async (req, res) => {
+  try {
+    //who sent the request to see likes
+    const token = req.headers["authorization"].split(" ")[1];
+    const user_id = validateToken(token).id;
+    const savedPosts = await PostSaved.find({ user_id }).lean();
+    const postsId = savedPosts.map((p) => p.post_id);
     const posts = await Post.find({ _id: { $in: postsId } });
     res.status(200).json({ posts });
   } catch (e) {
