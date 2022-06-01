@@ -5,7 +5,7 @@ const { timelinePost,
     getInfoPost, 
     likePost, 
     savePost,
-    commentPost } = require("./post.controller");
+    commentPost } = require("./posts.controller");
 
 const postRoutes = Router();
 

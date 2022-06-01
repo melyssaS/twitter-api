@@ -1,11 +1,10 @@
-const { Request, Response } = require("express");
 
 const { timelinePostService, 
     newPostService, 
     getInfoPostService, 
     likePostService,
     savePostService,
-    commentPostService } = require('./post.service');
+    commentPostService } = require('./posts.service');
 
 
 const timelinePost = async (request, response) => {

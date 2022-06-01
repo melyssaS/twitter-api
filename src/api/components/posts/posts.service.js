@@ -1,4 +1,4 @@
-const postModels = require('./post.models');
+const postModels = require('./posts.models');
 
 
 function timelinePostService(req) {
