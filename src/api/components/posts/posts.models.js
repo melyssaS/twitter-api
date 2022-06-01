@@ -28,7 +28,7 @@ const postsSchema = new mongoose.Schema({
     },
 
     comments: { 
-        type: String, 
+        type: JSON, 
         required: false 
     },
     

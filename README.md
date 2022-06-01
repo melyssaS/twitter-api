@@ -87,7 +87,7 @@ Luis Llanos, Fabricio Puche, Melyssa Solano
   - El campo 'action' corresponde a la string 'accept' o 'reject'.
 
 
-- [ ] Get timeline de un usuario
+- [x] Get timeline de un usuario
   - Debe ser paginada
   - Metodo: GET
   - Ruta: '/posts/timeline'
@@ -95,12 +95,12 @@ Luis Llanos, Fabricio Puche, Melyssa Solano
   - Response: { posts }
 
 
-- [ ] Endpoint de crear/subir publicacion
+- [x] Endpoint de crear/subir publicacion
   - Metodo: POST
   - Ruta: '/posts/'
   - Body: { img_url, bio, author }
   - Response: {  }
-- [ ] Endpoint de informacion de publicacion
+- [x] Endpoint de informacion de publicacion
   - Debe incluir el numero de likes de la publicacion, calculado on-demand
   - Debe incluir los comentarios de la publicacion, calculado on-demand
   - Metodo: GET
@@ -109,17 +109,17 @@ Luis Llanos, Fabricio Puche, Melyssa Solano
   - Response: { img_url, bio, author, likes, comments }
 
 
-- [ ] Endpoint de dar me gusta a una publicación
+- [x] Endpoint de dar me gusta a una publicación
   - Metodo: POST
   - Ruta: '/posts/like'
   - Body: { post_id }
   - Response: {  }
-- [ ] Endpoint de guardar una publicación
+- [x] Endpoint de guardar una publicación
   - Metodo: POST
   - Ruta: '/posts/save'
   - Body: { post_id }
   - Response: {  }
-- [ ] Endpoint de comentar en una publicación
+- [x] Endpoint de comentar en una publicación
   - Metodo: POST
   - Ruta: '/posts/'
   - Body: { post_id, comment }

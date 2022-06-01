@@ -1,30 +1,30 @@
 const Router = require("express") ;
 
-const { timelinePost, 
-    newPost, 
-    getInfoPost, 
-    likePost, 
-    savePost,
-    commentPost } = require("./posts.controller");
+const { timelinePosts, 
+    newPosts, 
+    getInfoPosts, 
+    likePosts, 
+    savePosts,
+    commentPosts } = require("./posts.controller");
 
-const postRoutes = Router();
+const postsRoutes = Router();
 
 //Get timeline of an user
-postRoutes.get('/timeline', timelinePost);
+postsRoutes.get('/timeline', timelinePosts);
 
 //Create a new posts
-postRoutes.post('/', newPost);
+postsRoutes.post('/', newPosts);
 
 //Get info of the post
-postRoutes.get('/', getInfoPost);
+postsRoutes.get('/', getInfoPosts);
 
 //Post send a like
-postRoutes.post('/like', likePost);
+postsRoutes.post('/like', likePosts);
 
 //Save post
-postRoutes.post('/save', savePost);
+postsRoutes.post('/save', savePosts);
 
 //Comment on a post
-postRoutes.post('/comment', commentPost);
+postsRoutes.post('/comment', commentPosts);
 
-module.exports = postRoutes;
+module.exports = postsRoutes;

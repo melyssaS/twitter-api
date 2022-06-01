@@ -1,14 +1,14 @@
 
-const { timelinePostService, 
-    newPostService, 
-    getInfoPostService, 
-    likePostService,
-    savePostService,
-    commentPostService } = require('./posts.service');
+const { timelinePostsService, 
+    newPostsService, 
+    getInfoPostsService, 
+    likePostsService,
+    savePostsService,
+    commentPostsService } = require('./posts.service');
 
 
-const timelinePost = async (request, response) => {
-    return timelinePostService(request)
+const timelinePosts = async (request, response) => {
+    return timelinePostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -17,8 +17,8 @@ const timelinePost = async (request, response) => {
         });
 }
 
-const newPost = async (request, response) => {
-    return newPostService(request)
+const newPosts = async (request, response) => {
+    return newPostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -27,8 +27,8 @@ const newPost = async (request, response) => {
         });
 }
 
-const getInfoPost = async (request, response) => {
-    return getInfoPostService(request)
+const getInfoPosts = async (request, response) => {
+    return getInfoPostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -37,8 +37,8 @@ const getInfoPost = async (request, response) => {
         });
 }
 
-const likePost = async (request, response) => {
-    return likePostService(request)
+const likePosts = async (request, response) => {
+    return likePostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -47,8 +47,8 @@ const likePost = async (request, response) => {
         });
 }
 
-const savePost = async (request, response) => {
-    return savePostService(request)
+const savePosts = async (request, response) => {
+    return savePostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -57,8 +57,8 @@ const savePost = async (request, response) => {
         });
 }
 
-const commentPost = async (request, response) => {
-    return commentPostService(request)
+const commentPosts = async (request, response) => {
+    return commentPostsService(request)
         .then((data) => {
             response.json(data);
         })
@@ -67,4 +67,4 @@ const commentPost = async (request, response) => {
         });
 }
 
-module.exports = {timelinePost, newPost, getInfoPost, likePost, savePost, commentPost}
+module.exports = {timelinePosts, newPosts, getInfoPosts, likePosts, savePosts, commentPosts}

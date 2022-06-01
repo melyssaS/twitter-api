@@ -1,10 +1,22 @@
-const postModels = require('./posts.models');
+const postsModels = require('./posts.models');
 
 
-function timelinePostService(req) {
+function timelinePostsService(req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const posts = await postModels.find({ owner_id: req.query.user_id });
+            let recordPerPage = 5;
+            let totalPages = await postsModels.count();
+            let pages = Math.ceil(totalPages / recordPerPage);
+
+            let pageNumber = (req.body.page == null || req.body.page > pages) ? 1 : req.body.page;
+            let startFrom = (pageNumber - 1) * recordPerPage;
+
+            const posts = await postsModels.find({})
+                .sort({ "id": -1 })
+                .skip(startFrom)
+                .limit(recordPerPage)
+                .toArray();
+
             resolve(posts);
         } catch (error) {
             console.log(error);
@@ -14,11 +26,11 @@ function timelinePostService(req) {
 }
 
 
-function newPostService(req) {
+function newPostsService(req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const posts = await postModels.find({}, ' -updatedAt').sort({ updatedAt: -1 });
-            resolve(posts);
+            const newPost = await postsModels.create(req.body);
+            resolve({ data: "OK", status: 401 });
         } catch (error) {
             console.log(error);
             reject({ data: "Server internal error", status: 500 });
@@ -27,10 +39,10 @@ function newPostService(req) {
 };
 
 
-function getInfoPostService(req) {
+function getInfoPostsService(req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const posts = await postModels.findById(req.query.post_id);
+            const posts = await postsModels.findById(req.query.post_id);
             resolve(posts);
         } catch (error) {
             console.log(error);
@@ -39,11 +51,29 @@ function getInfoPostService(req) {
     });
 }
 
-function likePostService(req) {
-    return new Promise(async(resolve, reject) => {
+function likePostsService(req) {
+    return new Promise(async (resolve, reject) => {
         try {
-            const newPost = await postModels.create(req.body);
-            resolve(newPost);
+            const posts = await postsModels.findById(req.body.post_id);
+            postsModels.findOneAndUpdate({ _id: req.body.post_id }, {
+                $set: {
+                    like: posts.like,
+                }
+            }, function (error, info) {
+                if (error) {
+                    res.json({
+                        result: false,
+                        msg: 'No se pudo modificar el post',
+                        err
+                    });
+                } else {
+                    res.json({
+                        result: true,
+                        info: info
+                    })
+                }
+            });
+            resolve({ data: "Updated", status: 400 });
         } catch (error) {
             console.log(error);
             reject({ data: "Server internal error", status: 500 });
@@ -51,30 +81,44 @@ function likePostService(req) {
     });
 }
 
-function savePostService(req) {
+function savePostsService(req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const newReview = await postModels.create(req.body);
-            console.log(newReview);
-            resolve(newReview);
+            resolve({ data: "Ok", status: 401 });
         } catch (error) {
             console.log(error);
-            reject({ data: "Server internal error",status: 500 });
+            reject({ data: "Server internal error", status: 500 });
         }
     });
 }
 
-function commentPostService(req) {
-    return new Promise(async(resolve, reject) => {
+function commentPostsService(req) {
+    return new Promise(async (resolve, reject) => {
         try {
-            const reviews = await postModels.find({  product_id: req.query.product_id })
-                                             .sort({ rating: -1 });
-            resolve(reviews);
+            postsModels.findOneAndUpdate({ _id: req.body.post_id }, {
+                $set: {
+                    comments: req.body.comments,
+                }
+            }, function (error, info) {
+                if (error) {
+                    res.json({
+                        result: false,
+                        msg: 'No se pudo modificar el post',
+                        err
+                    });
+                } else {
+                    res.json({
+                        result: true,
+                        info: info
+                    })
+                }
+            });
+            resolve({ data: "Updated", status: 400 });
         } catch (error) {
             console.log(error);
-            reject({ data: "Server internal error",status: 500 });
+            reject({ data: "Server internal error", status: 500 });
         }
     });
 }
 
-module.exports = { timelinePostService, newPostService, getInfoPostService, likePostService, savePostService, commentPostService }
+module.exports = { timelinePostsService, newPostsService, getInfoPostsService, likePostsService, savePostsService, commentPostsService }
