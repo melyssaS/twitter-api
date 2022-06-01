@@ -1,33 +1,32 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const userSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    birthdate: {
+      type: Date,
+      required: true,
+    },
+    bio: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  birthdate: {
-    type: Date,
-    required: true,
-  },
-  bio: {
-    type: String,
-    required: true,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+);
 
 const hashPw = async (pw) => {
   return bcrypt.hash(pw, bcrypt.genSaltSync(10));

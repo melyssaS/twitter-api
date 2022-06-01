@@ -95,4 +95,58 @@ describe("User Endpoint", () => {
       expect(res.body.message).toEqual(`Password does not match`);
     });
   });
+  describe("User Info", () => {
+    let token;
+    let userId;
+    const payload = {
+      username: "Test",
+      password: "A",
+      email: "a@a.com",
+      birthdate: new Date(2000, 3, 23),
+      bio: "Hola",
+    };
+    //before getting info create user
+    beforeAll(async () => {
+      const res = await request(app).post("/users").send(payload);
+      const { _id } = await User.findOne({ username: payload.username }).lean();
+      userId = _id.toString();
+      //save login token
+      token = res.body.token;
+    });
+    afterAll(async () => {
+      //delete all registered users
+      await User.deleteMany({});
+    });
+    it("GetInfo Missing Authorization", async () => {
+      const res = await request(app).get("/users").query({ user_id: userId });
+      expect(res.statusCode).toEqual(401);
+      expect(res.body.message).toEqual("Missing Authorization Token");
+    });
+    it("GetInfo InvalidToken", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth("123", { type: "bearer" });
+      expect(res.statusCode).toEqual(500);
+      expect(res.body.message).toEqual("jwt malformed");
+    });
+    it("GetInfo Success", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.statusCode).toEqual(200);
+      expect(
+        [
+          "username",
+          "email",
+          "bio",
+          "liked_count",
+          "posts_count",
+          "followers_count",
+          "followed_count",
+        ].every((key) => res.body.hasOwnProperty(key))
+      ).toBe(true);
+    });
+  });
 });
