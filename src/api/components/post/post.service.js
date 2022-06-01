@@ -1,8 +1,7 @@
-const postModels = require('../models/user.models');
-const reviewModels = require('../models/review.models');
+const postModels = require('./post.models');
 
 
-function userPostService(req) {
+function timelinePostService(req) {
     return new Promise(async (resolve, reject) => {
         try {
             const posts = await postModels.find({ owner_id: req.query.user_id });
@@ -15,7 +14,7 @@ function userPostService(req) {
 }
 
 
-function lastPostService(req) {
+function newPostService(req) {
     return new Promise(async (resolve, reject) => {
         try {
             const posts = await postModels.find({}, ' -updatedAt').sort({ updatedAt: -1 });
@@ -28,7 +27,7 @@ function lastPostService(req) {
 };
 
 
-function getPostService(req) {
+function getInfoPostService(req) {
     return new Promise(async (resolve, reject) => {
         try {
             const posts = await postModels.findById(req.query.post_id);
@@ -40,7 +39,7 @@ function getPostService(req) {
     });
 }
 
-function createPostService(req) {
+function likePostService(req) {
     return new Promise(async(resolve, reject) => {
         try {
             const newPost = await postModels.create(req.body);
@@ -52,10 +51,10 @@ function createPostService(req) {
     });
 }
 
-function createReviewService(req) {
+function savePostService(req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const newReview = await reviewModels.create(req.body);
+            const newReview = await postModels.create(req.body);
             console.log(newReview);
             resolve(newReview);
         } catch (error) {
@@ -65,10 +64,10 @@ function createReviewService(req) {
     });
 }
 
-function getReviewService(req) {
+function commentPostService(req) {
     return new Promise(async(resolve, reject) => {
         try {
-            const reviews = await reviewModels.find({  product_id: req.query.product_id })
+            const reviews = await postModels.find({  product_id: req.query.product_id })
                                              .sort({ rating: -1 });
             resolve(reviews);
         } catch (error) {
@@ -78,4 +77,4 @@ function getReviewService(req) {
     });
 }
 
-module.exports = { userPostService, lastPostService, getPostService, createReviewService, getReviewService }
+module.exports = { timelinePostService, newPostService, getInfoPostService, likePostService, savePostService, commentPostService }

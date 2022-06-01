@@ -1,31 +1,30 @@
-import { Router } from "express";
+const Router = require("express") ;
 
-const { userPost, 
-    lastPost, 
-    getPost, 
-    createPost, 
-    createReview,
-    getReview } = require('../post.controllers');
+const { timelinePost, 
+    newPost, 
+    getInfoPost, 
+    likePost, 
+    savePost,
+    commentPost } = require("./post.controller");
 
 const postRoutes = Router();
 
+//Get timeline of an user
+postRoutes.get('/timeline', timelinePost);
 
-//Get post of a User
-postRoutes.get('/user', userPost);
+//Create a new posts
+postRoutes.post('/', newPost);
 
-//Get most recent post
-postRoutes.get('/last', lastPost);
+//Get info of the post
+postRoutes.get('/', getInfoPost);
 
-//Get individual post
-postRoutes.get('/', getPost);
+//Post send a like
+postRoutes.post('/like', likePost);
 
-//Create a new post
-postRoutes.post('/', createPost);
+//Save post
+postRoutes.post('/save', savePost);
 
-//Create a new review for a post
-postRoutes.post('/review', createReview);
+//Comment on a post
+postRoutes.post('/comment', commentPost);
 
-//Get reviews of a post
-postRoutes.get('/review', getReview);
-
-export default postRoutes;
+module.exports = postRoutes;

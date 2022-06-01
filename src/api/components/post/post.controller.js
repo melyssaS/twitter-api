@@ -1,15 +1,15 @@
-import { Request, Response } from "express";
+const { Request, Response } = require("express");
 
-const { userPostService, 
-    lastPostService, 
-    getPostService, 
-    createPostService,
-    createReviewService,
-    getReviewService } = require('../services/post.services');
+const { timelinePostService, 
+    newPostService, 
+    getInfoPostService, 
+    likePostService,
+    savePostService,
+    commentPostService } = require('./post.service');
 
 
-const userPost = async (request, response) => {
-    return userPostService(request)
+const timelinePost = async (request, response) => {
+    return timelinePostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -18,8 +18,8 @@ const userPost = async (request, response) => {
         });
 }
 
-const lastPost = async (request, response) => {
-    return lastPostService(request)
+const newPost = async (request, response) => {
+    return newPostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -28,8 +28,8 @@ const lastPost = async (request, response) => {
         });
 }
 
-const getPost = async (request, response) => {
-    return getPostService(request)
+const getInfoPost = async (request, response) => {
+    return getInfoPostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -38,8 +38,8 @@ const getPost = async (request, response) => {
         });
 }
 
-const createPost = async (request, response) => {
-    return createPostService(request)
+const likePost = async (request, response) => {
+    return likePostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -48,8 +48,8 @@ const createPost = async (request, response) => {
         });
 }
 
-const createReview = async (request, response) => {
-    return createReviewService(request)
+const savePost = async (request, response) => {
+    return savePostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -58,8 +58,8 @@ const createReview = async (request, response) => {
         });
 }
 
-const getReview = async (request, response) => {
-    return getReviewService(request)
+const commentPost = async (request, response) => {
+    return commentPostService(request)
         .then((data) => {
             response.json(data);
         })
@@ -68,4 +68,4 @@ const getReview = async (request, response) => {
         });
 }
 
-module.exports = {userPost, lastPost, getPost, createPost, createReview, getReview}
+module.exports = {timelinePost, newPost, getInfoPost, likePost, savePost, commentPost}

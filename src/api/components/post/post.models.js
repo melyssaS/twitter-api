@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require( 'mongoose');
 
 const postsSchema = new mongoose.Schema({
 
@@ -9,22 +9,27 @@ const postsSchema = new mongoose.Schema({
 
     img_url: { 
         type: String, 
-        required: true 
+        required: true  
     },
 
-    display_name: { 
+    bio: { 
         type: String, 
         required: true 
     },
 
-    description: { 
+    author: { 
         type: String, 
         required: true 
     },
 
-    price: { 
+    likes: { 
         type: String, 
-        required: true 
+        required: false 
+    },
+
+    comments: { 
+        type: String, 
+        required: false 
     },
     
 }, { timestamps: { createdAt: 'created_date' } })
