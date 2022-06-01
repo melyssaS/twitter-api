@@ -15,4 +15,10 @@ const followerSchema = new mongoose.Schema(
   { timestamps: { createdAt: "created_at" } }
 );
 
+/**
+ * If user 0 follows user 1 and 2 then
+ * {user_id: 0, following_id: 1}
+ * {user_id: 0, following_id: 1}
+ */
+
 module.exports = mongoose.model("Follower", followerSchema);

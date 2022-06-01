@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const Post = require("../models/post");
+const PostLike = require("../models/post-likes");
+const Follower = require("../models/follower");
 const request = require("supertest");
 const app = require("../index");
 
@@ -62,7 +65,7 @@ describe("User Endpoint", () => {
       //delete all registered users
       await User.deleteMany({});
     });
-    it("User/Pw Success", async () => {
+    it("Informacion valida User/Pw", async () => {
       const payload = {
         username: "Test",
         password: "A",
@@ -71,12 +74,12 @@ describe("User Endpoint", () => {
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty("token");
     });
-    it("JWT Token Success", async () => {
+    it("Informacion valida JWT", async () => {
       const res = await request(app).post("/users/login").send({ token });
       expect(res.statusCode).toEqual(200);
       expect(res.body).toEqual({});
     });
-    it("User does not exists", async () => {
+    it("Informacion invalida (usuario no existe)", async () => {
       const payload = {
         username: "Test2",
         password: "A",
@@ -85,7 +88,7 @@ describe("User Endpoint", () => {
       expect(res.statusCode).toEqual(404);
       expect(res.body.message).toEqual(`User ${payload.username} not found`);
     });
-    it("Password does not match", async () => {
+    it("Informacion invalida (contraseña incorrecta)", async () => {
       const payload = {
         username: "Test",
         password: "A2",
@@ -95,7 +98,7 @@ describe("User Endpoint", () => {
       expect(res.body.message).toEqual(`Password does not match`);
     });
   });
-  describe("User Info", () => {
+  describe("Informacion de Usuario", () => {
     let token;
     let userId;
     const payload = {
@@ -112,17 +115,44 @@ describe("User Endpoint", () => {
       userId = _id.toString();
       //save login token
       token = res.body.token;
+      //add some posts
+      const post1 = await Post.create({
+        author_id: userId,
+        img_url: "",
+        bio: "Primer Post",
+      });
+      await PostLike.create({
+        author_id: userId,
+        post_id: post1._id.toString(),
+      });
+      //The user follows 2 people
+      await Follower.create({
+        user_id: userId,
+        following_id: "2",
+      });
+      await Follower.create({
+        user_id: userId,
+        following_id: "3",
+      });
+      //someone follows the user
+      await Follower.create({
+        user_id: "3",
+        following_id: userId,
+      });
     });
     afterAll(async () => {
-      //delete all registered users
+      //delete all registered data
       await User.deleteMany({});
+      await Post.deleteMany({});
+      await PostLike.deleteMany({});
+      await Follower.deleteMany({});
     });
     it("GetInfo Missing Authorization", async () => {
       const res = await request(app).get("/users").query({ user_id: userId });
       expect(res.statusCode).toEqual(401);
       expect(res.body.message).toEqual("Missing Authorization Token");
     });
-    it("GetInfo InvalidToken", async () => {
+    it("GetInfo MalformedToken", async () => {
       const res = await request(app)
         .get("/users")
         .query({ user_id: userId })
@@ -147,6 +177,43 @@ describe("User Endpoint", () => {
           "followed_count",
         ].every((key) => res.body.hasOwnProperty(key))
       ).toBe(true);
+    });
+    it("Contraseña y fecha de cumpleaños no incluida", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.body.birthdate).toBeUndefined();
+      expect(res.body.password).toBeUndefined();
+    });
+    it("Numero de publicaciones del usuario", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.body.posts_count).toEqual(1);
+      expect(res.body.liked_count).toEqual(1);
+    });
+    it("Numero de publicaciones que le gustan al usuario", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.body.liked_count).toEqual(1);
+    });
+    it("Numero de seguidores", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.body.followers_count).toEqual(1);
+    });
+    it("Numero de seguidos", async () => {
+      const res = await request(app)
+        .get("/users")
+        .query({ user_id: userId })
+        .auth(token, { type: "bearer" });
+      expect(res.body.followed_count).toEqual(2);
     });
   });
 });

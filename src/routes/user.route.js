@@ -29,7 +29,7 @@ route.post("/", async (req, res) => {
     }
     const user = await User.create(req.body);
     const token = createToken({
-      name: user.name,
+      username: user.username,
       id: user._id,
     });
     res.status(200).json({
