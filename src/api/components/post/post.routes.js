@@ -5,7 +5,7 @@ const { userPost,
     getPost, 
     createPost, 
     createReview,
-    getReview } = require('../controllers/post.controllers');
+    getReview } = require('../post.controllers');
 
 const postRoutes = Router();
 

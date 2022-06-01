@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import postRoutes from "./components/post/routes/post.routes";
+import postRoutes from "./api/components/post/routes/post.routes";
 
 import bodyParser from "body-parser";
 import cors from 'cors';    
