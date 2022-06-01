@@ -4,7 +4,7 @@ const config = require("dotenv").config;
 config();
 
 const connectdb = async () => {
-  const URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@backendproyects.max0n.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
+  const URI =  (process.env.DATABASE_URL != null) ? process.env.DATABASE_URL : `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@backendproyects.max0n.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
   try {
     await mongoose.connect(URI);
     console.log("Connected to database");
