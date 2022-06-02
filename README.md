@@ -152,7 +152,7 @@ Desarrollen el backend para un clon de Twitter + Instagram.
 
 - [X] Dar me gusta a publicacion
 - [x] Publicaciones "gustadas" por un usuario
-- [X] Guardar publicacion
+- [x] Guardar publicacion
 - [x] Publicaciones guardadas por un usuario
-- [O] Comentar publicacion
-- [O] Comentarios de una publicacion
+- [x] Comentar publicacion
+- [] Comentarios de una publicacion

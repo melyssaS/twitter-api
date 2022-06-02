@@ -4,6 +4,7 @@ const Post = require("../models/post");
 const PostLike = require("../models/post-likes");
 const PostSaved = require("../models/post-saved");
 const Follower = require("../models/follower");
+const Comment = require("../models/comment");
 const request = require("supertest");
 const app = require("../index");
 
@@ -63,6 +64,8 @@ describe("Post Endpoint", () => {
       await Post.deleteMany();
       await PostLike.deleteMany();
       await PostSaved.deleteMany();
+      await Comment.deleteMany();
+      await Follower.deleteMany();
     });
     it("Publicaciones gustadas por un usuario", async () => {
       const res = await request(app)
@@ -83,8 +86,54 @@ describe("Post Endpoint", () => {
       expect(res.body.posts.length).toEqual(2);
       expect(res.body.posts.map((p) => p.bio)).toEqual(["Post1", "Post2"]);
     });
-    it("Should Comentar publicacion", async () => {});
-
-    it("Should Mostrar Comentarios de una publicacion", async () => {});
+    it("Dar me gusta a publicacion", async () => {
+      const { _id: post_id } = await Post.create({
+        bio: "Post3",
+        author_id: userId,
+        img_url: "",
+      });
+      let like = await PostLike.exists({ post_id, user_id: userId });
+      expect(like).toBe(null);
+      const res = await request(app)
+        .post("/posts/like")
+        .send({ post_id })
+        .auth(token, { type: "bearer" });
+      expect(res.statusCode).toEqual(200);
+      like = await PostLike.exists({ post_id, user_id: userId });
+      expect(like).toBeDefined();
+    });
+    it("Guardar publicacion", async () => {
+      const { _id: post_id } = await Post.create({
+        bio: "Post4",
+        author_id: userId,
+        img_url: "",
+      });
+      let saved = await PostSaved.exists({ post_id, user_id: userId });
+      expect(saved).toBe(null);
+      const res = await request(app)
+        .post("/posts/save")
+        .send({ post_id })
+        .auth(token, { type: "bearer" });
+      expect(res.statusCode).toEqual(200);
+      saved = await PostSaved.exists({ post_id, user_id: userId });
+      expect(saved).toBeDefined();
+    });
+    it("Comentar publicacion", async () => {
+      const { _id: post_id } = await Post.create({
+        bio: "PostWithComments",
+        author_id: userId,
+        img_url: "",
+      });
+      let postComment = await Comment.exists({ post_id, user_id: userId });
+      expect(postComment).toBe(null);
+      const res = await request(app)
+        .post("/posts")
+        .send({ post_id, comment: "Ola k ace" })
+        .auth(token, { type: "bearer" });
+      expect(res.statusCode).toEqual(200);
+      postComment = await Comment.exists({ post_id, user_id: userId });
+      expect(postComment).toBeDefined();
+    });
+    it("Comentarios de una publicacion", async () => {});
   });
 });

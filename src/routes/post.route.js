@@ -146,7 +146,7 @@ route.post("/save", async (req, res) => {
     const user_id = validateToken(token).id;
     if (post_id) {
       const alreadyExists = await PostSaved.exists({
-        post_id: mongoose.Types.ObjectId(req.body.post_id),
+        post_id,
         user_id,
       });
       if (alreadyExists) {
@@ -169,11 +169,13 @@ route.post("/save", async (req, res) => {
 //Endpoint de crear/subir publicacion && Endpoint de comentar en una publicación
 route.post("/", async (req, res) => {
   try {
+    const token = req.headers["authorization"].split(" ")[1];
+    const user_id = validateToken(token).id;
     if (req.body.post_id && req.body.comment) {
       await Comment.create({
         post_id: req.body.post_id,
         text: req.body.comment,
-        author: req.user.user_id,
+        author: user_id,
       });
       return res.status(200).json({});
     }
