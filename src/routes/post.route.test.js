@@ -82,6 +82,14 @@ describe("Post Endpoint", () => {
       expect(res.body).toHaveProperty("posts");
       expect(res.body.posts.length).toEqual(2);
       expect(res.body.posts.map((p) => p.bio)).toEqual(["Post1", "Post2"]);
+    });  
+    it("Should Comentar publicacion", async () => {
+      
     });
+  
+    it("Should Mostrar Comentarios de una publicacion", async () => {
+      
+    });
+  
   });
 });

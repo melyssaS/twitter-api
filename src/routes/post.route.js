@@ -8,6 +8,8 @@ const { validateToken } = require("../config/auth");
 const route = router();
 
 //Solo está permitido si el usuario esta siguiendo al usuario, a menos que sea el usuario mismo
+
+//Endpoint de informacion de publicacion --> Falta
 route.get("/", async (req, res) => {
   try {
     //the author you want to see posts
@@ -85,5 +87,52 @@ route.get("/saved-by", async (req, res) => {
     res.status(500).json({ message: e.message });
   }
 });
+
+//Get timeline de un usuario
+route.get("/timeline", async (req, res) => {
+  try {
+    //
+    res.status(200).json({ posts });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
+
+//Endpoint de dar me gusta a una publicación
+route.post("/like", async (req, res) => {
+  try {
+    
+   
+    res.status(200).json({ posts });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
+
+//Endpoint de guardar una publicación
+route.post("/save", async (req, res) => {
+  try {
+    
+   
+    res.status(200).json({ posts });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
+
+//Endpoint de crear/subir publicacion && Endpoint de comentar en una publicación
+route.post("/", async (req, res) => {
+  try {
+    //
+    res.status(200).json({ posts });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
+
 
 module.exports = route;
