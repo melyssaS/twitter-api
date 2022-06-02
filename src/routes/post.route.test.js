@@ -40,7 +40,7 @@ describe("Post Endpoint", () => {
       });
       //create a post
       await PostLike.create({
-        author_id: userId,
+        user_id: userId,
         post_id: post1._id.toString(),
       });
       const post2 = await Post.create({
@@ -82,14 +82,9 @@ describe("Post Endpoint", () => {
       expect(res.body).toHaveProperty("posts");
       expect(res.body.posts.length).toEqual(2);
       expect(res.body.posts.map((p) => p.bio)).toEqual(["Post1", "Post2"]);
-    });  
-    it("Should Comentar publicacion", async () => {
-      
     });
-  
-    it("Should Mostrar Comentarios de una publicacion", async () => {
-      
-    });
-  
+    it("Should Comentar publicacion", async () => {});
+
+    it("Should Mostrar Comentarios de una publicacion", async () => {});
   });
 });

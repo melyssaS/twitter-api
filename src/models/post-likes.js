@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const postLikeSchema = new mongoose.Schema(
   {
-    author_id: {
+    user_id: {
       type: String,
       required: true,
     },

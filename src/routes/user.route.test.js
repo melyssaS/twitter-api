@@ -122,7 +122,7 @@ describe("User Endpoint", () => {
         bio: "Primer Post",
       });
       await PostLike.create({
-        author_id: userId,
+        user_id: userId,
         post_id: post1._id.toString(),
       });
       //The user follows 2 people

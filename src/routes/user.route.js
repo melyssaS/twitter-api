@@ -88,7 +88,7 @@ route.get("/", async (req, res) => {
       return res.status(404).json({ message: "User does not exists" });
     }
     //Debe incluir el numero de publicaciones que el usuario ha dado me gusta, calculado on-demand
-    const likedPosts = await PostLike.count({ author_id: user_id });
+    const likedPosts = await PostLike.count({ user_id });
     //Debe incluir el numero de publicaciones que el usuario ha subido, calculado on-demand
     const postCounts = await Post.count({ author_id: user_id });
     //Debe incluir el numero de seguidores del usuario, calculado on-demand

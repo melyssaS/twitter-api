@@ -91,7 +91,7 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - Response: { posts }
 
 
-- [O] Endpoint de crear/subir publicacion
+- [x] Endpoint de crear/subir publicacion
   - Metodo: POST
   - Ruta: '/posts/'
   - Body: { img_url, bio, author }

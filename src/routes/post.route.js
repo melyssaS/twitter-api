@@ -3,6 +3,7 @@ const User = require("../models/user");
 const PostLike = require("../models/post-likes");
 const PostSaved = require("../models/post-saved");
 const Follower = require("../models/follower");
+const Comment = require("../models/comment");
 const Post = require("../models/post");
 const { validateToken } = require("../config/auth");
 const route = router();
@@ -92,17 +93,16 @@ route.get("/saved-by", async (req, res) => {
 route.get("/timeline", async (req, res) => {
   try {
     let recordPerPage = 5;
-    let totalPages = await postsModels.count();
-    let pages = Math.ceil(totalPages / recordPerPage);
-
-    let pageNumber = (req.body.page == null || req.body.page > pages) ? 1 : req.body.page;
+    let pageNumber = !req.body.page ? 1 : req.body.page;
     let startFrom = (pageNumber - 1) * recordPerPage;
-
-    const posts = await Post.find({})
-      .sort({ "id": -1 })
+    //who sent the request to see likes
+    const token = req.headers["authorization"].split(" ")[1];
+    const user_id = validateToken(token).id;
+    const posts = await Post.find({ author_id: user_id })
+      .sort({ id: -1 })
       .skip(startFrom)
       .limit(recordPerPage)
-      .toArray();
+      .lean();
     res.status(200).json({ posts });
   } catch (e) {
     console.error(e);
@@ -113,17 +113,24 @@ route.get("/timeline", async (req, res) => {
 //Endpoint de dar me gusta a una publicación
 route.post("/like", async (req, res) => {
   try {
-    if (req.body.post_id && !await PostLike.findOne({
-      post_id: req.body.post_id,
-      user_id: req.user.user_id
-    })) {
-      const save = await PostLike.create({
-        post_id: req.body.post_id,
-        user_id: req.user.user_id
+    const { post_id } = req.body;
+    const token = req.headers["authorization"].split(" ")[1];
+    const user_id = validateToken(token).id;
+    if (post_id) {
+      const alreadyExists = await PostLike.exists({
+        post_id,
+        user_id,
       });
-      res.status(200).json(save)
+      if (alreadyExists) {
+        return res.status(409).json({ message: "Already liked" });
+      }
+      await PostLike.create({
+        post_id,
+        user_id,
+      });
+      res.status(200).json({});
     } else {
-      res.status(404).json({ message: 'Ya está gustado', statusCode: 401 })
+      res.status(401).json({ message: "Not Valid" });
     }
   } catch (e) {
     console.error(e);
@@ -134,14 +141,24 @@ route.post("/like", async (req, res) => {
 //Endpoint de guardar una publicación
 route.post("/save", async (req, res) => {
   try {
-    if (req.body.post_id && !await PostSaved.findOne({ post_id: mongoose.Types.ObjectId(req.body.post_id), user_id: req.user.user_id })) {
-      const save = await PostSaved.create({
+    const { post_id } = req.body;
+    const token = req.headers["authorization"].split(" ")[1];
+    const user_id = validateToken(token).id;
+    if (post_id) {
+      const alreadyExists = await PostSaved.exists({
         post_id: mongoose.Types.ObjectId(req.body.post_id),
-        user_id: req.user.user_id
+        user_id,
       });
-      res.status(200).json({ posts });
+      if (alreadyExists) {
+        return res.status(409).json({ message: "Already saved" });
+      }
+      await PostSaved.create({
+        post_id,
+        user_id,
+      });
+      res.status(200).json({});
     } else {
-      res.status(404).json({ message: 'Not valid', statusCode: 401 })
+      res.status(401).json({ message: "Not valid" });
     }
   } catch (e) {
     console.error(e);
@@ -153,20 +170,26 @@ route.post("/save", async (req, res) => {
 route.post("/", async (req, res) => {
   try {
     if (req.body.post_id && req.body.comment) {
-      const comment = await commentModel.create({
+      await Comment.create({
         post_id: req.body.post_id,
-        comment: req.body.comment,
-        user_id: req.user.user_id
+        text: req.body.comment,
+        author: req.user.user_id,
       });
-      res.status(200).json(comment)
-    } else {
-      res.status(404).json({ message: 'Not valid', statusCode: 401 })
+      return res.status(200).json({});
     }
+    if (req.body.img_url && req.body.bio && req.body.author) {
+      await Post.create({
+        author_id: req.body.author,
+        img_url: req.body.img_url,
+        bio: req.body.bio,
+      });
+      return res.status(200).json({});
+    }
+    return res.status(401).json({ message: "Not valid" });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: e.message });
   }
 });
-
 
 module.exports = route;
