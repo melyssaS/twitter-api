@@ -83,7 +83,7 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - El campo 'action' corresponde a la string 'accept' o 'reject'.
 
 
-- [O] Get timeline de un usuario
+- [x] Get timeline de un usuario
   - Debe ser paginada
   - Metodo: GET
   - Ruta: '/posts/timeline'
@@ -105,17 +105,17 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - Response: { img_url, bio, author, likes, comments }
 
 
-- [O] Endpoint de dar me gusta a una publicación
+- [X] Endpoint de dar me gusta a una publicación
   - Metodo: POST
   - Ruta: '/posts/like'
   - Body: { post_id }
   - Response: {  }
-- [O] Endpoint de guardar una publicación
+- [X] Endpoint de guardar una publicación
   - Metodo: POST
   - Ruta: '/posts/save'
   - Body: { post_id }
   - Response: {  }
-- [O] Endpoint de comentar en una publicación
+- [X] Endpoint de comentar en una publicación
   - Metodo: POST
   - Ruta: '/posts/'
   - Body: { post_id, comment }

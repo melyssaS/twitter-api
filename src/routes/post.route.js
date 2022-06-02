@@ -91,7 +91,18 @@ route.get("/saved-by", async (req, res) => {
 //Get timeline de un usuario
 route.get("/timeline", async (req, res) => {
   try {
-    //
+    let recordPerPage = 5;
+    let totalPages = await postsModels.count();
+    let pages = Math.ceil(totalPages / recordPerPage);
+
+    let pageNumber = (req.body.page == null || req.body.page > pages) ? 1 : req.body.page;
+    let startFrom = (pageNumber - 1) * recordPerPage;
+
+    const posts = await Post.find({})
+      .sort({ "id": -1 })
+      .skip(startFrom)
+      .limit(recordPerPage)
+      .toArray();
     res.status(200).json({ posts });
   } catch (e) {
     console.error(e);
@@ -102,9 +113,18 @@ route.get("/timeline", async (req, res) => {
 //Endpoint de dar me gusta a una publicación
 route.post("/like", async (req, res) => {
   try {
-    
-   
-    res.status(200).json({ posts });
+    if (req.body.post_id && !await PostLike.findOne({
+      post_id: req.body.post_id,
+      user_id: req.user.user_id
+    })) {
+      const save = await PostLike.create({
+        post_id: req.body.post_id,
+        user_id: req.user.user_id
+      });
+      res.status(200).json(save)
+    } else {
+      res.status(404).json({ message: 'Ya está gustado', statusCode: 401 })
+    }
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: e.message });
@@ -114,9 +134,15 @@ route.post("/like", async (req, res) => {
 //Endpoint de guardar una publicación
 route.post("/save", async (req, res) => {
   try {
-    
-   
-    res.status(200).json({ posts });
+    if (req.body.post_id && !await PostSaved.findOne({ post_id: mongoose.Types.ObjectId(req.body.post_id), user_id: req.user.user_id })) {
+      const save = await PostSaved.create({
+        post_id: mongoose.Types.ObjectId(req.body.post_id),
+        user_id: req.user.user_id
+      });
+      res.status(200).json({ posts });
+    } else {
+      res.status(404).json({ message: 'Not valid', statusCode: 401 })
+    }
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: e.message });
@@ -126,8 +152,16 @@ route.post("/save", async (req, res) => {
 //Endpoint de crear/subir publicacion && Endpoint de comentar en una publicación
 route.post("/", async (req, res) => {
   try {
-    //
-    res.status(200).json({ posts });
+    if (req.body.post_id && req.body.comment) {
+      const comment = await commentModel.create({
+        post_id: req.body.post_id,
+        comment: req.body.comment,
+        user_id: req.user.user_id
+      });
+      res.status(200).json(comment)
+    } else {
+      res.status(404).json({ message: 'Not valid', statusCode: 401 })
+    }
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: e.message });
