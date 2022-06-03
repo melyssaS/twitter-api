@@ -55,26 +55,26 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - Ruta: '/posts/saved-by'
   - Query: { }
   - Response: { posts }
-- [ ] Endpoint de usuarios seguidos por un usuario
+- [x] Endpoint de usuarios seguidos por un usuario
   - Solo está permitido si el usuario esta siguiendo al usuario, a menos que sea el usuario mismo
   - Metodo: GET
   - Ruta: '/follows/following'
   - Query: { user_id }
   - Response: { users }
-- [ ] Endpoint de seguidores de un usuario
+- [x] Endpoint de seguidores de un usuario
   - Solo está permitido si el usuario esta siguiendo al usuario, a menos que sea el usuario mismo
   - Metodo: GET
   - Ruta: '/follows/followers'
   - Query: { user_id }
   - Response: { users }
 
-- [ ] Endpoint de solicitar seguir a un usuario
+- [x] Endpoint de solicitar seguir a un usuario
   - Solo permitido si el usuario ya no está siguiendo al usuario
   - Metodo: POST
   - Ruta: '/follows/request'
   - Body: { user_id }
   - Response: {}
-- [ ] Endpoint de aceptar o rechazar solicitud de seguir
+- [x] Endpoint de aceptar o rechazar solicitud de seguir
   - Solo está permitido si el usuario es el que recibe la solicitud
   - Metodo: POST
   - Ruta: '/follows/response'
@@ -141,13 +141,13 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - [x] Numero de seguidos refleja el numero correcto
 
 
-- [ ] Lista de seguidores de un usuario
-- [ ] Lista de seguidos de un usuario
-- [ ] Solicitar seguir
-- [ ] Aceptar solicitud
-  - [ ] Aceptar solicitud previamente aceptada o rechazada
-- [ ] Rechazar solicitud
-  - [ ] Rechazar solicitud previamente aceptada o rechazada
+- [x] Lista de seguidores de un usuario
+- [x] Lista de seguidos de un usuario
+- [x] Solicitar seguir
+- [x] Aceptar solicitud
+  - [x] Aceptar solicitud previamente aceptada o rechazada
+- [x] Rechazar solicitud
+  - [x] Rechazar solicitud previamente aceptada o rechazada
 
 
 - [X] Dar me gusta a publicacion
@@ -155,4 +155,4 @@ Desarrollen el backend para un clon de Twitter + Instagram.
 - [x] Guardar publicacion
 - [x] Publicaciones guardadas por un usuario
 - [x] Comentar publicacion
-- [] Comentarios de una publicacion
+- [x] Comentarios de una publicacion
