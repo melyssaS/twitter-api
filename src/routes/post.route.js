@@ -14,27 +14,24 @@ const route = router();
 route.get("/", async (req, res) => {
   try {
     //the author you want to see posts
-    const { author } = req.query;
-    if (!author) {
-      return res.status(401).json({ message: "Missing author field" });
+    const { post_id } = req.query;
+    if (!post_id) {
+      return res.status(401).json({ message: "Missing post_id field" });
     }
-    const token = req.headers["authorization"].split(" ")[1];
-    const user_id = validateToken(token).id;
 
-    //find if user is following the author
-    const isFollowing = await Follower.exists({
-      user_id,
-      following_id: author,
+    const post = await Post.findById(post_id).lean();
+    const comments = await Comment.find({ post_id }).lean();
+    const likes = await PostLike.count({ post_id });
+    const author = await User.findById(
+      post.author_id,
+      "-birthdate -password"
+    ).lean();
+    return res.status(200).json({
+      ...post,
+      author,
+      comments,
+      likes,
     });
-    //if its not my own posts or im not following the person
-    if (author !== user_id && !isFollowing) {
-      return res.status(401).json({
-        message:
-          "User is not post's owner or is not following the post's author",
-      });
-    }
-    const posts = await Post.find({ author_id: author }).lean();
-    return res.status(200).json(posts);
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: e.message });

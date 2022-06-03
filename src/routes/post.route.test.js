@@ -15,6 +15,69 @@ describe("Post Endpoint", () => {
   afterAll(async () => {
     await mongoose.disconnect();
   });
+  describe("Post Info", () => {
+    let token;
+    let userId;
+    let postId;
+    const payload = {
+      username: "Test",
+      password: "A",
+      email: "a@a.com",
+      birthdate: new Date(2000, 3, 23),
+      bio: "Hola",
+    };
+    beforeAll(async () => {
+      const res = await request(app).post("/users").send(payload);
+      const { _id } = await User.findOne({
+        username: payload.username,
+      }).lean();
+      userId = _id.toString();
+      //save login token
+      token = res.body.token;
+      const post1 = await Post.create({
+        author_id: userId,
+        img_url: "",
+        bio: "Post1",
+      });
+      postId = post1._id.toString();
+      //create 3 likes
+      await PostLike.create({
+        user_id: userId,
+        post_id: post1._id.toString(),
+      });
+      await PostLike.create({
+        user_id: "2",
+        post_id: post1._id.toString(),
+      });
+      await PostLike.create({
+        user_id: "3",
+        post_id: post1._id.toString(),
+      });
+      await Comment.create({
+        author: userId,
+        post_id: post1._id.toString(),
+        text: "Hola",
+      });
+    });
+    afterAll(async () => {
+      await Post.deleteMany({});
+      await PostLike.deleteMany({});
+      await Comment.deleteMany({});
+      await User.deleteMany({});
+    });
+    it("Post Info", async () => {
+      const res = await request(app)
+        .get("/posts")
+        .query({ post_id: postId })
+        .auth(token, { type: "bearer" });
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.bio).toEqual("Post1");
+      expect(res.body.likes).toEqual(3);
+      expect(res.body.comments.length).toEqual(1);
+      expect(res.body.author.username).toEqual(payload.username);
+      expect(res.body.author.email).toEqual(payload.email);
+    });
+  });
   describe("Liked And Saved Posts", () => {
     let token;
     let userId;

@@ -96,7 +96,7 @@ Desarrollen el backend para un clon de Twitter + Instagram.
   - Ruta: '/posts/'
   - Body: { img_url, bio, author }
   - Response: {  }
-- [ ] Endpoint de informacion de publicacion
+- [x] Endpoint de informacion de publicacion
   - Debe incluir el numero de likes de la publicacion, calculado on-demand
   - Debe incluir los comentarios de la publicacion, calculado on-demand
   - Metodo: GET
