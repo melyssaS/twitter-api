@@ -1,5 +1,7 @@
 const userRoute = require("./user.route");
 const postRoute = require("./post.route");
+const followsRoute = require("./follows.route");
+
 const { validateToken } = require("../config/auth");
 //use this to check for auth in token
 const unless = function (middleware, ...routes) {
@@ -40,6 +42,7 @@ const configRoutes = (app) => {
   );
   app.use("/users", userRoute);
   app.use("/posts", postRoute);
+  app.use("/follows", followsRoute);
 };
 
 module.exports = configRoutes;
